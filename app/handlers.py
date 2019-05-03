@@ -61,8 +61,7 @@ def get_ingredients(message):
     url = url.format(food_token = food_token, ingredients = ingredients)
     text = requests.get(url).json()
     i = 0
-    bot.send_message(message.chat.id, 'sas')
-    if text["recipes"].empty():
+    if len(text["recipes"]) == 0:
         bot.send_message(message.chat.id, 'Извините, не удалось найти не одного \
                                           рецепта с данными ингридиентами')
     for item in text["recipes"]:
