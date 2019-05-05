@@ -11,6 +11,6 @@ def get_food_token(token):
 
 def init_bot(token):
     global BOT
-    BOT = telebot.TeleBot(token, threaded=False)
+    BOT = telebot.TeleBot(token)
 
     from app import handlers
