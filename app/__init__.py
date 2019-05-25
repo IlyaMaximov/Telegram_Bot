@@ -4,6 +4,7 @@ BOT = None
 PERSON_INF = dict()
 FOOD_TOKEN = 0
 
+
 def get_food_token(token):
     global FOOD_TOKEN
     FOOD_TOKEN = token

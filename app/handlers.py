@@ -10,6 +10,7 @@ from app import BOT, PERSON_INF, FOOD_TOKEN
 
 FLAG_ENOUGH = 2
 
+
 @BOT.message_handler(commands=['start'])
 def handle_start(message):
     BOT.send_message(message.chat.id, 'Привет! Я - бот для еды. Поговори со мной.')
@@ -60,28 +61,28 @@ def get_ingredients(message):
     url = "https://www.food2fork.com/api/search?key={FOOD_TOKEN}&q={ingredients}"
     url = url.format(FOOD_TOKEN=FOOD_TOKEN, ingredients=ingredients)
     text = requests.get(url).json()
-    i = 0
+    dish_index = 0
     if not text["recipes"]:
-        BOT.send_message(message.chat.id, 'Извините, не удалось найти не одного \
-                                          рецепта с данными ингридиентами, {} {}'. \
-                                          format(PERSON_INF[(message.chat.id, 'name')], \
-                                          PERSON_INF[(message.chat.id, 'surname')]))
+        answer_pattern = 'Извините, не удалось найти не одного рецепта с данными ингридиентами, {name} {surname}'
+        answer = answer_pattern.format(name=PERSON_INF[(message.chat.id, 'name')],
+                                       surname=PERSON_INF[(message.chat.id, 'surname')])
+        BOT.send_message(message.chat.id, answer)
     for item in text["recipes"]:
-        i += 1
+        dish_index += 1
         BOT.send_message(message.chat.id, item['source_url'])
-        if i % 5 == 0:
+        if dish_index % 5 == 0:
             ask_question(message.chat.id)
             global FLAG_ENOUGH
             FLAG_ENOUGH = 2
             while FLAG_ENOUGH == 2:
                 time.sleep(1)
             if FLAG_ENOUGH:
-                BOT.send_message(message.chat.id, 'Рады что смогли помочь, {} {}'.format \
-                                (PERSON_INF[(message.chat.id, 'name')], PERSON_INF[(message.chat.id, 'surname')]))
+                BOT.send_message(message.chat.id, 'Рады что смогли помочь, {} {}'.format(
+                    PERSON_INF[(message.chat.id, 'name')], PERSON_INF[(message.chat.id, 'surname')]))
                 break
     if not FLAG_ENOUGH:
-        BOT.send_message(message.chat.id, 'Просим прощения, рецепты закончились, {} {}'.format \
-                        (PERSON_INF[(message.chat.id, 'name')], PERSON_INF[(message.chat.id, 'surname')]))
+        BOT.send_message(message.chat.id, 'Просим прощения, рецепты закончились, {} {}'.format(
+            PERSON_INF[(message.chat.id, 'name')], PERSON_INF[(message.chat.id, 'surname')]))
 
 
 def ask_question(chat_id):
